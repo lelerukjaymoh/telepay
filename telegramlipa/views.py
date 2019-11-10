@@ -75,17 +75,13 @@ def confirmation(request):
         transaction_result = transaction_response['ResultCode']
         print(transaction_result)
 
-        if transaction_response['ResultCode'] == 0:
+        if transaction_response['ResultCode'] != 0:
             print('Transaction successful')
 
-            return render(request, 'home.html', {})
-            # rendered = render_to_string('incompletetransaction.html', {})
-            # response = HttpResponse(rendered)
+            redirect('incompletetransaction')
 
         else:
-            return render(request, 'incompletetransaction.html', {})
-            # rendered = render_to_string('home.html', {})
-            # response = HttpResponse(rendered)
+            redirect('home')
 
    
 
