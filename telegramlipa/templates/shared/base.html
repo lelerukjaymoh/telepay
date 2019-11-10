@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"> -->
+    <title>{% block title %}{% endblock %}</title>
+</head>
+
+<body>
+        <!-- As a heading -->
+    <nav class="navbar main-nav">
+        <span class="navbar-brand mb-0 h1"><b>TelePay</b></span>
+      </nav>
+    {% block content %}
+    {% endblock %}
+   
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.js" integrity="sha256-BTlTdQO9/fascB1drekrDVkaKd9PkwBymMlHOiG+qLI=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+    <footer>
+            <div>
+                <p>Powered by <a href="https://github.com/coderjaymoh">coderjaymoh</a></p>
+            </div>
+        </footer>
+</body>
+
+
+<style>
+    .card{
+        width: 70%;
+        margin: 0 auto; 
+        float: none; 
+        margin-top: 50px; 
+        margin-bottom: 30px;
+        background-color: whitesmoke;
+        box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+    }
+
+    .welcome-card{
+        box-shadow: 0 19px 38px rgba(61, 45, 92,0.30), 0 15px 12px rgba(61, 45, 92,0.22);
+    }
+
+    label{
+        color: rgb(61, 45, 92);
+    }
+
+    .signup-button{
+        border: solid 2px rgb(61, 45, 92);
+        color: rgb(61, 45, 92);
+    }
+
+    .signup-button:hover{
+        color: white;
+        background-color: rgb(61, 45, 92);
+        border: solid 2px rgb(61, 45, 92);
+    }
+
+    .posted-alert{
+        width: 50%;
+        text-align: center;
+        margin: 0 auto;
+        margin-top: 50px;
+    }
+
+    .main-nav{
+        color: white;
+        background-color: rgb(61, 45, 92);
+    }
+
+    .main{
+        margin: 50px 0px 10px 20px;
+    }
+
+    .complete-transaction-card{
+        margin-top: 20px;
+        background: rgb(61, 45, 92, .5);
+        width: 50%;
+    }
+
+    .message{
+        margin-top: 20px;
+    }
+
+    footer{
+        margin-top: 100px;
+        padding: 15px 0px 10px 0px;
+        text-align: center;
+        color: white;
+        background-color: rgb(61, 45, 92);
+    }
+
+    .loading-spinner{
+        width: 5rem;
+        height: 5rem
+    }
+</style>
+</html>

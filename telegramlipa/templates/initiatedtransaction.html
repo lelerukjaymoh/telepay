@@ -1,0 +1,36 @@
+{% extends "shared/base.html" %}
+
+{% block title %}Complete your payment{% endblock %}
+
+{% block content %}
+
+{{transaction_response}}
+        
+<section class="main">
+    <div class="card spinner-card">
+        <div class="card-body text-center">
+            <div class="spinner-border loading-spinner text-success" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        
+
+        <br><br><p>Your transaction is underway on a successfull transaction you will receive a join link via SMS. The link can only be used once so keep it secure</p>
+    </div>
+    </div>
+</section>
+<script>
+    var transaction_result = "{{transaction_result}}";
+    console.log("this "+transaction_result)
+    // if (transaction_result == 0){}
+    // window.setTimeout(function(){
+    // window.location.href = "";
+    // }, 3000);
+        
+    // if (transaction_result == 1){}
+    // window.setTimeout(function(){
+    // window.location.href = "/incompletetransaction";
+    // }, 3000);
+</script>
+
+{% endblock %}
+    

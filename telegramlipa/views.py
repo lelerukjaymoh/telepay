@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
+from django.template.loader import render_to_string
 from django.views.generic import ListView
+from django.contrib import messages
 from django.conf import settings
 from telegramlipa.logic import Lipa
 from telegramlipa.models import Transaction
@@ -13,54 +15,85 @@ import base64
 import pprint
 
 def home(request):
+    if request.method == 'POST':
+        messages.add_message(request, messages.SUCCESS, 'Transaction Intited Successfully. Enter PIN on your phone')
+        
+        phone_no = request.POST['client_phone'][1:]
+
+        base_url = settings.BASE_URL
+        lipa_time = datetime.now().strftime('%Y%m%d%H%M%S')
+        Business_short_code = settings.BUSINESS_SHORTCODE
+        passkey = settings.PASSKEY
+        data_to_encode = Business_short_code + passkey + lipa_time
+        online_password = base64.b64encode(data_to_encode.encode())
+        decode_password = online_password.decode('utf-8')
+
+        lipa = Lipa()
+        access_token = lipa.get_token()
+        print(access_token)
+        api_url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+        headers = {"Authorization": "Bearer %s" % access_token}
+        request = {
+            "BusinessShortCode": Business_short_code,
+            "Password": decode_password,
+            "Timestamp": lipa_time,
+            "TransactionType": "CustomerPayBillOnline",
+            "Amount": "1",
+            "PartyA": "254"+phone_no, 
+            "PartyB": Business_short_code,
+            "PhoneNumber": "254"+phone_no,  
+            "CallBackURL": base_url+"/confirmation",
+            "AccountReference": "Jaymoh",
+            "TransactionDesc": "Leonet Channel join payment"
+        }
+        response = requests.post(api_url, json=request, headers=headers)
+        pprint.pprint(response.json())
+
+        rendered = render_to_string('initiatedtransaction.html', {})
+        response = HttpResponse(rendered)
+
+        return response
+
     return render(request, 'home.html', {})
-
-def lipaonline(request):
-    base_url = settings.BASE_URL
-    lipa_time = datetime.now().strftime('%Y%m%d%H%M%S')
-    Business_short_code = settings.BUSINESS_SHORTCODE
-    passkey = settings.PASSKEY
-    data_to_encode = Business_short_code + passkey + lipa_time
-    online_password = base64.b64encode(data_to_encode.encode())
-    decode_password = online_password.decode('utf-8')
-
-    lipa = Lipa()
-    access_token = lipa.get_token()
-    print(access_token)
-    api_url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
-    headers = {"Authorization": "Bearer %s" % access_token}
-    request = {
-        "BusinessShortCode": Business_short_code,
-        "Password": decode_password,
-        "Timestamp": lipa_time,
-        "TransactionType": "CustomerPayBillOnline",
-        "Amount": "1",
-        "PartyA": "254717771518", 
-        "PartyB": Business_short_code,
-        "PhoneNumber": "254717771518",  
-        "CallBackURL": "https://1771fa89.ngrok.io/confirmation",
-        "AccountReference": "Jaymoh",
-        "TransactionDesc": "Testing stk push"
-    }
-    response = requests.post(api_url, json=request, headers=headers)
-    pprint.pprint(response.json())
-    return HttpResponse()
 
 @csrf_exempt
 def confirmation(request):
-    response = json.loads(request.body)
-    transaction_response = response['Body']['stkCallback']
-    
-    save_transaction = Transaction(
-        MerchantRequestID = transaction_response['MerchantRequestID'],
-        CheckoutRequestID = transaction_response['CheckoutRequestID'],
-        ResultCode = transaction_response['ResultCode'],
-        ResultDesc = transaction_response['ResultDesc']
-    )
+    if request.method == 'POST':
+        response = json.loads(request.body)
+        pprint.pprint(response)
+        transaction_response = response['Body']['stkCallback']
+        
+        save_transaction = Transaction(
+            MerchantRequestID = transaction_response['MerchantRequestID'],
+            CheckoutRequestID = transaction_response['CheckoutRequestID'],
+            ResultCode = transaction_response['ResultCode'],
+            ResultDesc = transaction_response['ResultDesc']
+        )
 
-    save_transaction.save()
+        save_transaction.save()
 
-    return render(request, 'confirmation.html', {})
+        transaction_result = transaction_response['ResultCode']
+        print(transaction_result)
+
+        if transaction_response['ResultCode'] == 0:
+            print('Transaction successful')
+
+            return render(request, 'home.html', {})
+            # rendered = render_to_string('incompletetransaction.html', {})
+            # response = HttpResponse(rendered)
+
+        else:
+            return render(request, 'incompletetransaction.html', {})
+            # rendered = render_to_string('home.html', {})
+            # response = HttpResponse(rendered)
+
+   
+
+def initiatedtransaction(request):
+    return render(request, 'initiatedtransaction.html', {})
+
+def incompletetransaction(request):
+    return render(request, 'incompletetransaction.html')
 
 class TransactionsListView(ListView):
     model = Transaction

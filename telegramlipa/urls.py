@@ -4,7 +4,9 @@ from telegramlipa.views import TransactionsListView
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('lipaonline', views.lipaonline, name='lipaonline'),
+    # path('lipaonline', views.lipaonline, name='lipaonline'),
     path('confirmation', views.confirmation, name='confirmation'),
     path('transactions', TransactionsListView.as_view()),
+    path('initiatedtransaction', views.initiatedtransaction, name='initiatedtransaction'),
+    path('incompletetransaction', views.incompletetransaction, name='incompletetransaction'),
 ]
