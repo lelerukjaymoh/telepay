@@ -44,7 +44,7 @@ def home(request):
             "PhoneNumber": "254"+phone_no,  
             "CallBackURL": base_url+"/confirmation",
             "AccountReference": "Jaymoh",
-            "TransactionDesc": "Leonet Channel join payment"
+            "TransactionDesc": "Channel join payment"
         }
         response = requests.post(api_url, json=request, headers=headers)
         pprint.pprint(response.json())
@@ -58,12 +58,13 @@ def home(request):
 
 @csrf_exempt
 def confirmation(request):
+    print(request.body)
     if request.method == 'POST':
         response = json.loads(request.body)
         pprint.pprint(response)
         transaction_response = response['Body']['stkCallback']
         
-        save_transaction = Transaction(
+        save_transaction = Transaction( 
             MerchantRequestID = transaction_response['MerchantRequestID'],
             CheckoutRequestID = transaction_response['CheckoutRequestID'],
             ResultCode = transaction_response['ResultCode'],
@@ -73,17 +74,22 @@ def confirmation(request):
         save_transaction.save()
 
         transaction_result = transaction_response['ResultCode']
-        print(transaction_result)
+        print("ResultCode = %s" % transaction_result)
+        print(type(transaction_result))
 
-        if transaction_response['ResultCode'] != 0:
+        if transaction_result == 0:
             print('Transaction successful')
-
-            redirect('incompletetransaction')
+            return redirect("successfultransaction")
 
         else:
-            redirect('home')
+            print("Incomplete Transaction")
+            return redirect('incompletetransaction') 
 
-   
+    return render(request, 'home.html', {})
+    
+
+def successfultransaction(request):
+    return render(request, 'successfultransaction.html', {})  
 
 def initiatedtransaction(request):
     return render(request, 'initiatedtransaction.html', {})

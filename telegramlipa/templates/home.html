@@ -39,15 +39,26 @@
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="exampleInputPassword1">Phone Number</label>
-                    <input type="tel" class="form-control" name="client_phone" id="exampleInputPassword1" placeholder="0712345789" required>
+                    <input type="tel" class="form-control" name="client_phone" id="pay-button" placeholder="0712345789" required>
                 </div>
-                <input type="submit" class="btn signup-button" value="Pay">
+                <input type="submit" id="paying-button" class="btn paying-button"  value="Pay">
             </form>
         </div>
     </div>
 
     <script>
+        document.getElementById('paying-button').onclick = function changeContent() {
+            // var a = document.getElementById('paying-button')
+            // console.log(a)
+            // if (str != ''){
+            //     var str = '<button class="btn paying-button" type="button" disabled><span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span> Paying...</button>';
+            // $('#paying-button').replaceWith(str);
+            // }
+           }
+
         var transaction_result = "{{transaction_result}}";
         console.log("this "+transaction_result)
     </script>
 {% endblock %}
+
+

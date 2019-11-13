@@ -9,4 +9,5 @@ urlpatterns = [
     path('transactions', TransactionsListView.as_view()),
     path('initiatedtransaction', views.initiatedtransaction, name='initiatedtransaction'),
     path('incompletetransaction', views.incompletetransaction, name='incompletetransaction'),
+    path('successfultransaction', views.successfultransaction, name='successfultransaction'),
 ]
