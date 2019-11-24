@@ -2,10 +2,22 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 from django.views.generic import ListView
+from django.views.generic.edit import CreateView, UpdateView
+from django.contrib.auth import authenticate, login
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db import transaction
+
+# signup forms  
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
+from django.views import generic
+
+from telegramlipa.forms import ProfileUpdateForm
+
 from django.conf import settings
 from telegramlipa.logic import Lipa
-from telegramlipa.models import Transaction
+from telegramlipa.models import Transaction, Profile
 from django.http import HttpResponse
 import requests
 from requests.auth import HTTPBasicAuth
@@ -15,6 +27,7 @@ import base64
 import pprint
 
 def home(request):
+    print(request.user.id)
     if request.method == 'POST':
         messages.add_message(request, messages.SUCCESS, 'Transaction Intited Successfully. Enter PIN on your phone')
         
@@ -49,43 +62,27 @@ def home(request):
         response = requests.post(api_url, json=request, headers=headers)
         pprint.pprint(response.json())
 
-        rendered = render_to_string('initiatedtransaction.html', {})
-        response = HttpResponse(rendered)
-
-        return response
+        return HttpResponse('')
 
     return render(request, 'home.html', {})
 
 @csrf_exempt
 def confirmation(request):
+    print(request.method)
     print(request.body)
-    if request.method == 'POST':
-        response = json.loads(request.body)
-        pprint.pprint(response)
-        transaction_response = response['Body']['stkCallback']
-        
-        save_transaction = Transaction( 
-            MerchantRequestID = transaction_response['MerchantRequestID'],
-            CheckoutRequestID = transaction_response['CheckoutRequestID'],
-            ResultCode = transaction_response['ResultCode'],
-            ResultDesc = transaction_response['ResultDesc']
-        )
+    # if request.method == 'POST':
 
-        save_transaction.save()
+    #     print(request.method)
 
-        transaction_result = transaction_response['ResultCode']
-        print("ResultCode = %s" % transaction_result)
-        print(type(transaction_result))
+    #     response = json.loads(request.body)
+    #     pprint.pprint(response)
+    #     transaction_response = response['Body']['stkCallback']
 
-        if transaction_result == 0:
-            print('Transaction successful')
-            return redirect("successfultransaction")
+    #     transaction_result = transaction_response['ResultCode']
+    #     print("ResultCode = %s" % transaction_result)
+    #     print(type(transaction_result))
 
-        else:
-            print("Incomplete Transaction")
-            return redirect('incompletetransaction') 
-
-    return render(request, 'home.html', {})
+    return render(request, 'incompletetransaction.html', {})
     
 
 def successfultransaction(request):
@@ -96,6 +93,39 @@ def initiatedtransaction(request):
 
 def incompletetransaction(request):
     return render(request, 'incompletetransaction.html')
+
+
+# Dashboard views
+
+@login_required
+def dashboard(request):
+
+    # REVIEW => Check if user has completed registration.
+
+    account = Profile.objects.get(user=request.user)
+    if account.telegram_channel_name:
+        print(account.telegram_channel_name)
+         
+    return render(request, 'client/dashboard/dashboard.html', {})
+
+class ProfileUpdateView(CreateView):
+    model = Profile
+    form_class = ProfileUpdateForm
+    success_url = reverse_lazy('login')
+    template_name = 'client/dashboard/update_account.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+
+        return super().form_valid(form)
+
+# REVIEW TO BE REVIEWD => Either to use seperate file to tackle auth system
+
+# signup 
+class Signup(CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy('login')
+    template_name = 'registration/signup.html'
 
 class TransactionsListView(ListView):
     model = Transaction
