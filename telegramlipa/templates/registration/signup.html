@@ -1,0 +1,23 @@
+{% extends 'shared/base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h3 class="header">Sign Up</h3>
+        <form method="post">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            {% buttons %}
+            <button type="submit" class="btn paying-button">
+                Sign Up
+            </button>
+            {% endbuttons %}
+            <i class="text-muted">Already have an account,</i> <a href="{% url 'login' %}"><b class="signup-link">Login</b></a>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

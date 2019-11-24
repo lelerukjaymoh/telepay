@@ -1,0 +1,23 @@
+{% extends 'shared/base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h3 class="header">Finish account registration</h3>
+        <form method="post">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            {% buttons %}
+            <button type="submit" class="btn paying-button">
+               Register 
+            </button>
+            {% endbuttons %}
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}
