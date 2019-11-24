@@ -13,13 +13,13 @@
                 <span class="sr-only">Loading...</span>
             </div>
         
-
+            {{results}}
         <br><br><p>Your transaction is underway on a successfull transaction you will receive a join link via SMS. The link can only be used once so keep it secure</p>
     </div>
     </div>
 </section>
 <script>
-    var transaction_result = "{{transaction_result}}";
+    var transaction_result = "{{results}}";
     console.log("this "+transaction_result)
     // if (transaction_result == 0){}
     // window.setTimeout(function(){
