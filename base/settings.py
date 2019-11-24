@@ -19,6 +19,10 @@ BASE_URL = os.getenv('BASE_URL')
 BUSINESS_SHORTCODE = os.getenv('BUSINESS_SHORTCODE')
 PASSKEY = os.getenv('PASSKEY')
 
+# Telegram credentials
+API_ID = os.getenv('API_ID')
+API_HASH = os.getenv('API_HASH')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
