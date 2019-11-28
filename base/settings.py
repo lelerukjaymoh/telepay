@@ -28,6 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = '*'
 
+AUTH_USER_MODEL = 'telegramlipa.User'
+
 
 # Application definition
 
