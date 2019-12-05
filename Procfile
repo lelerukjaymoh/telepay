@@ -1,1 +1,1 @@
-web: gunicorn telegramlipa.wsgi --log-file -
+web: gunicorn base.wsgi --log-file -
