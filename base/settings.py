@@ -3,6 +3,8 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+AUTH_USER_MODEL = 'telegramlipa.User'
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -28,7 +30,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = '*'
 
-AUTH_USER_MODEL = 'telegramlipa.User'
+
 
 
 # Application definition
