@@ -1,3 +1,6 @@
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
@@ -17,7 +20,7 @@ from telegramlipa.forms import ProfileUpdateForm
 
 from django.conf import settings
 from telegramlipa.logic import Lipa
-from telegramlipa.models import Transaction, Profile
+from telegramlipa.models import Transaction, Profile, User
 from django.http import HttpResponse
 import requests
 from requests.auth import HTTPBasicAuth
@@ -26,7 +29,12 @@ from datetime import datetime
 import base64
 import pprint
 
+class GetUserModel:
+    def user_model(self):
+        User = get_user_model()
+
 def home(request):
+    print(User)
     print(request.user.id)
     if request.method == 'POST':
         messages.add_message(request, messages.SUCCESS, 'Transaction Intited Successfully. Enter PIN on your phone')
@@ -93,7 +101,7 @@ def initiatedtransaction(request):
 
 def incompletetransaction(request):
     return render(request, 'incompletetransaction.html')
-
+ 
 
 # Dashboard views
 
@@ -102,9 +110,10 @@ def dashboard(request):
 
     # REVIEW => Check if user has completed registration.
 
-    account = Profile.objects.get(user=request.user)
-    if account.telegram_channel_name:
-        print(account.telegram_channel_name)
+    account = User.objects.get(username=request.user)
+    print(account.have_completed_profile)
+    if account.have_completed_profile == False:
+        return redirect('update')
          
     return render(request, 'client/dashboard/dashboard.html', {})
 
@@ -116,6 +125,9 @@ class ProfileUpdateView(CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+    
+        complete = User(have_completed_profile=True)
+        complete.save()
 
         return super().form_valid(form)
 
