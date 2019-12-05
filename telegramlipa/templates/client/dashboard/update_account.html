@@ -4,9 +4,60 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<div class="card">
+<div class="card update-account-card">
     <div class="card-body">
         <h3 class="header">Finish account registration</h3>
+        <p>Hey! It seems you have not completed your account registration</p>
+
+        
+        <div class="billing-plans">
+            <h4><b>Billing Plans</b></h4>
+            <p>All the packages include:</p>
+            <ul>
+                <li>Handling all your users channel join payment fees securely</li>
+                <li>Ensuring your clients access your services more faster</li>
+            </ul>
+
+            <div class="row ">
+                <div class="col-sm-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Bronze</h5>
+                        </div>
+                        <div class="card-body bronze">
+                            
+                            <p class="card-text">Monthly payment of Ksh 450.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Silver</h5>
+                        </div>
+                        <div class="card-body silver">
+                            
+                            <p class="card-text">Quarterly payment of Ksh 1500</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Gold</h5>
+                        </div>
+                        <div class="card-body gold">
+                            
+                            <p class="card-text">Yearly payment of Ksh 4000</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
         <form method="post">
             {% csrf_token %}
             {% bootstrap_form form %}
@@ -19,5 +70,31 @@
     </div>
 </div>
 
+<style>
+    div.update-account-card{
+        box-shadow: none;
+        border: none;
+        background: none;
+    }
+
+    .billing-plans{
+        color: rgb(61, 45, 92);
+        margin: 50px 0px 0px 0px;
+    }
+
+    .billing-plans-container{
+        color: red;
+        margin: 0px;
+    }
+
+    .bronze{
+        background-color: bronze;
+    }
+
+    .card-header{
+        text-align: center;
+    }
+    
+</style>
 
 {% endblock %}
